@@ -1,0 +1,101 @@
+name: Bug Report / Bug 报告
+description: Report a bug in 1panel-actions / 报告 1panel-actions 中的 bug
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please provide as much detail as possible so we can reproduce and fix it.
+        感谢报告 bug！请尽可能提供详细信息，以便我们复现并修复。
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description / 问题描述
+      description: |
+        Describe the bug clearly. What did you expect to happen? What actually happened?
+        清晰描述这个 bug。你期望发生什么？实际发生了什么？
+      placeholder: e.g. The action fails with "Cannot read properties of null" when...
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version / 版本
+      description: |
+        Which version/ref of 1panel-actions are you using?
+        你使用的是哪个版本/ref？
+      placeholder: e.g. v1.0.0 / main
+    validations:
+      required: true
+
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Workflow YAML / 工作流配置
+      description: |
+        Paste your workflow YAML that triggers this bug
+        粘贴触发此 bug 的 workflow YAML
+      render: yaml
+      placeholder: |
+        ```yaml
+        - name: Run Script
+          uses: your-org/1panel-actions@v1
+          with:
+            action: runScript
+            url: ${{ secrets.PANEL_URL }}
+            token: ${{ secrets.PANEL_TOKEN }}
+            params: |
+              name=my-script
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / 日志
+      description: |
+        Paste the relevant error logs from the GitHub Actions run
+        粘贴 GitHub Actions 运行中的相关错误日志
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce / 复现步骤
+      description: |
+        Steps to reproduce the bug
+        复现此 bug 的步骤
+      placeholder: |
+        1. Use the workflow configuration above
+        2. Trigger the action
+        3. See error
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations / 确认项
+      options:
+        - label: |
+            I have searched the issue tracker and confirmed no duplicate exists.
+            我已认真检查过问题跟踪器并确定没有相同的问题。
+          required: true
+        - label: |
+            This is a bug in 1panel-actions, not a 1Panel server-side issue.
+            这是 1panel-actions 的 bug，而非 1Panel 服务端问题。
+          required: true
+        - label: |
+            I have not read the above items carefully and just checked all boxes — I agree this issue can be closed without notice.
+            我并未仔细阅读以上条目，只是单纯勾选了所有选项，并同意该问题可以被直接关闭。
+          required: false
+        - label: |
+            I have provided the workflow YAML and logs to help reproduce the issue.
+            我已提供 workflow YAML 和日志以帮助复现问题。
+          required: true

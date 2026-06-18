@@ -30,7 +30,7 @@ function getHeaders(token) {
 }
 
 async function request(url, token, method, body) {
-    let customHeaders = getHeaders(token);
+    const customHeaders = getHeaders(token);
     const fetchUrl = new URL(url);
     let fetchBody = undefined;
     if (method === 'GET' || method === 'DELETE') {
@@ -38,11 +38,20 @@ async function request(url, token, method, body) {
     } else {
         fetchBody = JSON.stringify(body);
     }
-    const fetchRes = await fetch(fetchUrl.href, {
-        method,
-        headers: customHeaders,
-        body: fetchBody
-    });
+    let fetchRes;
+    try {
+        fetchRes = await fetch(fetchUrl.href, {
+            method,
+            headers: customHeaders,
+            body: fetchBody
+        });
+    } catch (e) {
+        return {
+            code: 0,
+            message: e.message,
+            data: null
+        };
+    }
     if (fetchRes.status !== 200) {
         return {
             code: fetchRes.status,
@@ -65,9 +74,10 @@ async function runScript(url, token, {name}) {
         core.setFailed(`Get script ${name} failed: ${scriptsRes.message}`);
         return;
     }
-    const scripts = scriptsRes.data.items;
+    const scripts = scriptsRes.data?.items;
     if (!scripts || !scripts.length) {
         core.setFailed(`Script ${name} not found`);
+        return;
     }
     let scriptId = undefined;
     for (let script of scripts) {
@@ -76,6 +86,7 @@ async function runScript(url, token, {name}) {
     }
     if (!scriptId) {
         core.setFailed(`Script ${name} not found`);
+        return;
     }
     const scriptRunUrl = `${url}/api/v2/core/script/run`;
     const runRes = await request(scriptRunUrl, token, 'GET', {
@@ -106,11 +117,18 @@ const actions = {
 
 try {
     const action = core.getInput('action');
-    // param list in format like 'name=value'
     const url = core.getInput('url');
     const token = core.getInput('token');
+    if (!url) {
+        core.setFailed('Input "url" is required');
+        return;
+    }
+    if (!token) {
+        core.setFailed('Input "token" is required');
+        return;
+    }
     const params = core.getMultilineInput('params');
-    const paramObj = {token};
+    const paramObj = {};
     params.forEach(param => {
         const eqIndex = param.indexOf('=');
         if (eqIndex === -1) return;
@@ -139,10 +157,7 @@ try {
             return;
         }
     }
-    const result = actions[action].exec(url, token, paramObj);
-    if (result instanceof Promise) {
-        await result;
-    }
+    await actions[action].exec(url, token, paramObj);
 } catch (error) {
     core.setFailed(error.message);
 }

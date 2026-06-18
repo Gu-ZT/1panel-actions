@@ -1,0 +1,117 @@
+name: Action Request / 请求新 Action
+description: Submit a request for a new 1Panel Action / 提交你需要的 1Panel Action
+title: "[Action Request] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing to 1panel-actions! Please fill in the details below to help us understand your needs.
+        感谢你为 1panel-actions 贡献想法！请填写以下信息，帮助我们理解你的需求。
+
+  - type: input
+    id: action-name
+    attributes:
+      label: Action Name / Action 名称
+      description: |
+        A concise name for this action (e.g. `installApp`, `createWebsite`)
+        给这个 action 起一个简洁的英文名（如 `installApp`、`createWebsite`）
+      placeholder: e.g. installApp / 例：installApp
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description / 功能描述
+      description: |
+        Describe what this action should do
+        描述这个 action 应该做什么
+      placeholder: e.g. Install an app via 1Panel API / 例：通过 1Panel API 安装一个应用
+    validations:
+      required: true
+
+  - type: input
+    id: api-endpoint
+    attributes:
+      label: 1Panel API / 涉及的 API
+      description: |
+        Which 1Panel API endpoint does this action need? See [1Panel API docs](https://github.com/1Panel-dev/1Panel)
+        需要调用哪个 1Panel API 接口？参考 [1Panel API 文档](https://github.com/1Panel-dev/1Panel)
+      placeholder: e.g. POST /api/v2/apps/install / 例：POST /api/v2/apps/install
+    validations:
+      required: false
+
+  - type: textarea
+    id: params
+    attributes:
+      label: Parameters / 参数列表
+      description: |
+        List the parameters this action needs (name, type, required):
+        列出需要的参数（名称、类型、是否必填）：
+        - name
+        - type: string | number | boolean
+        - required: true | false
+      placeholder: |
+        - name: appId
+          type: number
+          required: true
+        - name: version
+          type: string
+          required: false
+    validations:
+      required: false
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Usage Example / 使用示例
+      description: |
+        Provide an example workflow YAML using this action
+        提供一个使用这个 action 的 workflow 示例
+      placeholder: |
+        ```yaml
+        - name: Install App
+          uses: your-org/1panel-actions@v1
+          with:
+            action: installApp
+            url: ${{ secrets.PANEL_URL }}
+            token: ${{ secrets.PANEL_TOKEN }}
+            params: |
+              appId=123
+              version=latest
+        ```
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations / 确认项
+      options:
+        - label: |
+            I have searched the issue tracker and confirmed no duplicate exists.
+            我已认真检查过问题跟踪器并确定没有相同的问题。
+          required: true
+        - label: |
+            This action request is within the scope of 1Panel API capabilities.
+            该 action 请求在 1Panel API 的能力范围内。
+          required: true
+        - label: |
+            I have not read the above items carefully and just checked all boxes — I agree this issue can be closed without notice.
+            我并未仔细阅读以上条目，只是单纯勾选了所有选项，并同意该问题可以被直接关闭。
+          required: false
+        - label: |
+            I understand this is a feature request, not a bug report.
+            我理解这是功能请求，而非 bug 报告。
+          required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context / 补充说明
+      description: |
+        Any other information that helps understand this request
+        任何其他有助于理解该需求的信息
+    validations:
+      required: false
