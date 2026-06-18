@@ -1,0 +1,148 @@
+import * as core from '@actions/core';
+import * as crypto from 'crypto';
+
+function convertValue(value, type) {
+    switch (type) {
+        case 'number': {
+            const num = Number(value);
+            if (isNaN(num)) throw new Error(`Cannot convert "${value}" to number`);
+            return num;
+        }
+        case 'boolean':
+            if (value === 'true' || value === '1') return true;
+            if (value === 'false' || value === '0') return false;
+            throw new Error(`Cannot convert "${value}" to boolean`);
+        case 'string':
+            return value;
+        default:
+            return value;
+    }
+}
+
+function getHeaders(token) {
+    const timestamp = Date.now();
+    const calcToken = crypto.createHash('md5').update('1panel' + token + timestamp).digest('hex');
+    return {
+        'Content-Type': 'application/json',
+        '1Panel-Token': calcToken,
+        '1Panel-Timestamp': `${timestamp}`
+    };
+}
+
+async function request(url, token, method, body) {
+    let customHeaders = getHeaders(token);
+    const fetchUrl = new URL(url);
+    let fetchBody = undefined;
+    if (method === 'GET' || method === 'DELETE') {
+        fetchUrl.search = new URLSearchParams(body).toString();
+    } else {
+        fetchBody = JSON.stringify(body);
+    }
+    const fetchRes = await fetch(fetchUrl.href, {
+        method,
+        headers: customHeaders,
+        body: fetchBody
+    });
+    if (fetchRes.status !== 200) {
+        return {
+            code: fetchRes.status,
+            message: fetchRes.statusText,
+            data: null
+        };
+    }
+    return await fetchRes.json();
+}
+
+async function runScript(url, token, {name}) {
+    const scriptSearchUrl = `${url}/api/v2/core/script/search`;
+    const scriptsRes = await request(scriptSearchUrl, token, 'POST', {
+        groupID: 0,
+        info: name,
+        page: 1,
+        pageSize: 100
+    });
+    if (scriptsRes.code !== 200) {
+        core.setFailed(`Get script ${name} failed: ${scriptsRes.message}`);
+        return;
+    }
+    const scripts = scriptsRes.data.items;
+    if (!scripts || !scripts.length) {
+        core.setFailed(`Script ${name} not found`);
+    }
+    let scriptId = undefined;
+    for (let script of scripts) {
+        if (script.name !== name) continue;
+        scriptId = script.id;
+    }
+    if (!scriptId) {
+        core.setFailed(`Script ${name} not found`);
+    }
+    const scriptRunUrl = `${url}/api/v2/core/script/run`;
+    const runRes = await request(scriptRunUrl, token, 'GET', {
+        cols: 80,
+        rows: 24,
+        script_id: scriptId,
+        operateNode: 'local'
+    });
+    if (runRes.code !== 200) {
+        core.setFailed(`Run script ${name} failed: ${runRes.message}`);
+        return;
+    }
+    core.info(`Script ${name} run success`);
+}
+
+const actions = {
+    'runScript': {
+        exec: runScript,
+        params: [
+            {
+                name: 'name',
+                type: 'string',
+                required: true
+            }
+        ]
+    }
+};
+
+try {
+    const action = core.getInput('action');
+    // param list in format like 'name=value'
+    const url = core.getInput('url');
+    const token = core.getInput('token');
+    const params = core.getMultilineInput('params');
+    const paramObj = {token};
+    params.forEach(param => {
+        const eqIndex = param.indexOf('=');
+        if (eqIndex === -1) return;
+        paramObj[param.slice(0, eqIndex).trim()] = param.slice(eqIndex + 1).trim();
+    });
+    if (!actions[action]) {
+        core.setFailed(`Action ${action} not found`);
+        return;
+    }
+    if (actions[action].params) {
+        let failed = false;
+        actions[action].params.forEach(param => {
+            if (!paramObj[param.name]) {
+                core.setFailed(`Param ${param.name} is required`);
+                failed = true;
+                return;
+            }
+            try {
+                paramObj[param.name] = convertValue(paramObj[param.name], param.type);
+            } catch (e) {
+                core.setFailed(`Param ${param.name} must be ${param.type}: ${e.message}`);
+                failed = true;
+            }
+        });
+        if (failed) {
+            return;
+        }
+    }
+    const result = actions[action].exec(url, token, paramObj);
+    if (result instanceof Promise) {
+        await result;
+    }
+} catch (error) {
+    core.setFailed(error.message);
+}

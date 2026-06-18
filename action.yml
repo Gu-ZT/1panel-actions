@@ -1,0 +1,21 @@
+name: 'Gu-ZT/1panel-actions'
+description: 'Use 1Panel API to perform some operations'
+branding:
+  icon: package
+  color: gray-dark
+inputs:
+  url:
+    description: "1Panel url, for example: 'https://1panel.example.com'"
+    required: true
+  token:
+    description: 'API token'
+    required: true
+  action:
+    description: 'Action to perform'
+    required: true
+  params:
+    description: "param list in format like 'name=value'"
+    required: false
+runs:
+  using: 'node20'
+  main: 'index.js'
