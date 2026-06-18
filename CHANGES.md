@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 
 本项目的所有重要变更都将记录在此文件中。
 
-### [1.0.0] - 2026-06-19
+## [1.0.0] - 2026-06-19
 
-**Added**
+### **Added**
 
 - Initial release of 1Panel Actions
 - `runScript` action: search and execute scripts on 1Panel server
@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file.
 - 1Panel API authentication with MD5 token hashing and timestamp
 - Input support: `url`, `token`, `action`, `params`
 
-**新增**
+### **新增**
 
 - 1Panel Actions 初始发布
 - `runScript` 操作：搜索并执行 1Panel 服务器上的脚本
@@ -23,4 +23,4 @@ All notable changes to this project will be documented in this file.
 - 基于 MD5 令牌哈希和时间戳的 1Panel API 认证
 - 输入支持：`url`、`token`、`action`、`params`
 
-[1.0.0]: https://github.com/Gu-ZT/1panel-actions/releases/tag/v1.0.0
+[1.0.0]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.0
