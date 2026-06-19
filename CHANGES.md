@@ -87,6 +87,17 @@ All notable changes to this project will be documented in this file.
   - `[Request]` — HTTP 方法、URL、响应状态
   - `[runScript]` — 搜索进度、匹配数量、脚本 ID、执行结果
 
+## [1.0.5] - 2026-06-19
+
+### **Changed**
+
+- Timestamp precision reduced from milliseconds to seconds to align with 1Panel server expectation
+
+### **优化**
+
+- 时间戳精度从毫秒降为秒级，以匹配 1Panel 服务端预期
+
+[1.0.5]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.5
 [1.0.4]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.4
 [1.0.3]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.3
 [1.0.2]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.2

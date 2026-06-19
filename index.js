@@ -21,8 +21,8 @@ function convertValue(value, type) {
 
 function getHeaders(token, timezoneOffset) {
     const rawTimestamp = Date.now();
-    const timestamp = rawTimestamp + timezoneOffset * 3600000;
-    core.info(`[Auth] raw timestamp: ${rawTimestamp}, timezone offset: ${timezoneOffset}h, adjusted: ${timestamp}`);
+    const timestamp = Math.floor(rawTimestamp / 1000) + timezoneOffset * 3600;
+    core.info(`[Auth] raw timestamp (ms): ${rawTimestamp}, timezone offset: ${timezoneOffset}h, adjusted (s): ${timestamp}`);
     const calcToken = crypto.createHash('md5').update('1panel' + token + timestamp).digest('hex');
     return {
         'Content-Type': 'application/json',

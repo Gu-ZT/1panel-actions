@@ -34,7 +34,7 @@ Search and execute a script on 1Panel.
 ```yaml
 steps:
   - name: Run 1Panel script
-    uses: Gu-ZT/1panel-actions@1.0.3
+    uses: Gu-ZT/1panel-actions@1.0.5
     with:
       url: ${{ secrets.ONEPANEL_URL }}
       token: ${{ secrets.ONEPANEL_TOKEN }}
@@ -83,7 +83,7 @@ MIT — see [LICENSE](LICENSE).
 ```yaml
 steps:
   - name: 运行 1Panel 脚本
-    uses: Gu-ZT/1panel-actions@1.0.3
+    uses: Gu-ZT/1panel-actions@1.0.5
     with:
       url: ${{ secrets.ONEPANEL_URL }}
       token: ${{ secrets.ONEPANEL_TOKEN }}
