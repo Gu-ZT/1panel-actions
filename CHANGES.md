@@ -49,5 +49,16 @@ All notable changes to this project will be documented in this file.
 - 移除多余的 `instanceof Promise` 检查 — `runScript` 始终返回 Promise
 - 移除 `paramObj` 中无用的 `token` 字段
 
+## [1.0.2] - 2026-06-19
+
+### **Fixed**
+
+- Node 24 ESM compatibility: wrapped top-level logic in `main()` function — `return` is illegal at module top level in strict ESM
+
+### **修复**
+
+- Node 24 ESM 兼容：将顶层逻辑包裹在 `main()` 函数中 — 严格 ESM 模块顶层不允许 `return`
+
+[1.0.2]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.2
 [1.0.1]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.1
 [1.0.0]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.0

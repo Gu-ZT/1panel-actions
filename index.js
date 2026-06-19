@@ -115,49 +115,53 @@ const actions = {
     }
 };
 
-try {
-    const action = core.getInput('action');
-    const url = core.getInput('url');
-    const token = core.getInput('token');
-    if (!url) {
-        core.setFailed('Input "url" is required');
-        return;
-    }
-    if (!token) {
-        core.setFailed('Input "token" is required');
-        return;
-    }
-    const params = core.getMultilineInput('params');
-    const paramObj = {};
-    params.forEach(param => {
-        const eqIndex = param.indexOf('=');
-        if (eqIndex === -1) return;
-        paramObj[param.slice(0, eqIndex).trim()] = param.slice(eqIndex + 1).trim();
-    });
-    if (!actions[action]) {
-        core.setFailed(`Action ${action} not found`);
-        return;
-    }
-    if (actions[action].params) {
-        let failed = false;
-        actions[action].params.forEach(param => {
-            if (!paramObj[param.name]) {
-                core.setFailed(`Param ${param.name} is required`);
-                failed = true;
-                return;
-            }
-            try {
-                paramObj[param.name] = convertValue(paramObj[param.name], param.type);
-            } catch (e) {
-                core.setFailed(`Param ${param.name} must be ${param.type}: ${e.message}`);
-                failed = true;
-            }
-        });
-        if (failed) {
+async function main() {
+    try {
+        const action = core.getInput('action');
+        const url = core.getInput('url');
+        const token = core.getInput('token');
+        if (!url) {
+            core.setFailed('Input "url" is required');
             return;
         }
+        if (!token) {
+            core.setFailed('Input "token" is required');
+            return;
+        }
+        const params = core.getMultilineInput('params');
+        const paramObj = {};
+        params.forEach(param => {
+            const eqIndex = param.indexOf('=');
+            if (eqIndex === -1) return;
+            paramObj[param.slice(0, eqIndex).trim()] = param.slice(eqIndex + 1).trim();
+        });
+        if (!actions[action]) {
+            core.setFailed(`Action ${action} not found`);
+            return;
+        }
+        if (actions[action].params) {
+            let failed = false;
+            actions[action].params.forEach(param => {
+                if (!paramObj[param.name]) {
+                    core.setFailed(`Param ${param.name} is required`);
+                    failed = true;
+                    return;
+                }
+                try {
+                    paramObj[param.name] = convertValue(paramObj[param.name], param.type);
+                } catch (e) {
+                    core.setFailed(`Param ${param.name} must be ${param.type}: ${e.message}`);
+                    failed = true;
+                }
+            });
+            if (failed) {
+                return;
+            }
+        }
+        await actions[action].exec(url, token, paramObj);
+    } catch (error) {
+        core.setFailed(error.message);
     }
-    await actions[action].exec(url, token, paramObj);
-} catch (error) {
-    core.setFailed(error.message);
 }
+
+await main();
