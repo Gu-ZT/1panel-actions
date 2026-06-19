@@ -59,6 +59,25 @@ All notable changes to this project will be documented in this file.
 
 - Node 24 ESM 兼容：将顶层逻辑包裹在 `main()` 函数中 — 严格 ESM 模块顶层不允许 `return`
 
+## [1.0.4] - 2026-06-19
+
+### **Added**
+
+- Debug logging throughout the action:
+  - `[Main]` — action name, url, timezone, raw and converted params
+  - `[Auth]` — raw timestamp, timezone offset, adjusted timestamp
+  - `[Request]` — HTTP method, URL, response status
+  - `[runScript]` — search progress, match count, script id, execution result
+
+### **新增**
+
+- 全链路调试日志：
+  - `[Main]` — action 名称、url、时区、原始和转换后的参数
+  - `[Auth]` — 原始时间戳、时区偏移量、调整后的时间戳
+  - `[Request]` — HTTP 方法、URL、响应状态
+  - `[runScript]` — 搜索进度、匹配数量、脚本 ID、执行结果
+
+[1.0.4]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.4
 ## [1.0.3] - 2026-06-19
 
 ### **Added**

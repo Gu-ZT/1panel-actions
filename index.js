@@ -20,7 +20,9 @@ function convertValue(value, type) {
 }
 
 function getHeaders(token, timezoneOffset) {
-    const timestamp = Date.now() + timezoneOffset * 3600000;
+    const rawTimestamp = Date.now();
+    const timestamp = rawTimestamp + timezoneOffset * 3600000;
+    core.info(`[Auth] raw timestamp: ${rawTimestamp}, timezone offset: ${timezoneOffset}h, adjusted: ${timestamp}`);
     const calcToken = crypto.createHash('md5').update('1panel' + token + timestamp).digest('hex');
     return {
         'Content-Type': 'application/json',
@@ -30,6 +32,7 @@ function getHeaders(token, timezoneOffset) {
 }
 
 async function request(url, token, method, body, timezoneOffset) {
+    core.info(`[Request] ${method} ${new URL(url).pathname}`);
     const customHeaders = getHeaders(token, timezoneOffset);
     const fetchUrl = new URL(url);
     let fetchBody = undefined;
@@ -46,12 +49,14 @@ async function request(url, token, method, body, timezoneOffset) {
             body: fetchBody
         });
     } catch (e) {
+        core.info(`[Request] network error: ${e.message}`);
         return {
             code: 0,
             message: e.message,
             data: null
         };
     }
+    core.info(`[Request] response status: ${fetchRes.status}`);
     if (fetchRes.status !== 200) {
         return {
             code: fetchRes.status,
@@ -63,6 +68,7 @@ async function request(url, token, method, body, timezoneOffset) {
 }
 
 async function runScript(url, token, {name}, timezoneOffset) {
+    core.info(`[runScript] searching script "${name}"...`);
     const scriptSearchUrl = `${url}/api/v2/core/script/search`;
     const scriptsRes = await request(scriptSearchUrl, token, 'POST', {
         groupID: 0,
@@ -75,6 +81,7 @@ async function runScript(url, token, {name}, timezoneOffset) {
         return;
     }
     const scripts = scriptsRes.data?.items;
+    core.info(`[runScript] found ${scripts ? scripts.length : 0} matching scripts`);
     if (!scripts || !scripts.length) {
         core.setFailed(`Script ${name} not found`);
         return;
@@ -83,12 +90,14 @@ async function runScript(url, token, {name}, timezoneOffset) {
     for (let script of scripts) {
         if (script.name !== name) continue;
         scriptId = script.id;
+        core.info(`[runScript] matched script id: ${scriptId}`);
     }
     if (!scriptId) {
         core.setFailed(`Script ${name} not found`);
         return;
     }
     const scriptRunUrl = `${url}/api/v2/core/script/run`;
+    core.info(`[runScript] executing script...`);
     const runRes = await request(scriptRunUrl, token, 'GET', {
         cols: 80,
         rows: 24,
@@ -99,7 +108,7 @@ async function runScript(url, token, {name}, timezoneOffset) {
         core.setFailed(`Run script ${name} failed: ${runRes.message}`);
         return;
     }
-    core.info(`Script ${name} run success`);
+    core.info(`[runScript] script "${name}" executed successfully`);
 }
 
 const actions = {
@@ -122,6 +131,7 @@ async function main() {
         const token = core.getInput('token');
         const timezoneRaw = core.getInput('timezone') || '+0';
         const timezoneOffset = Number(timezoneRaw);
+        core.info(`[Main] action: ${action}, timezone: UTC${timezoneRaw}`);
         if (isNaN(timezoneOffset)) {
             core.setFailed(`Invalid timezone "${timezoneRaw}"`);
             return;
@@ -139,8 +149,10 @@ async function main() {
         params.forEach(param => {
             const eqIndex = param.indexOf('=');
             if (eqIndex === -1) return;
-            paramObj[param.slice(0, eqIndex).trim()] = param.slice(eqIndex + 1).trim();
+            const key = param.slice(0, eqIndex).trim();
+            paramObj[key] = param.slice(eqIndex + 1).trim();
         });
+        core.info(`[Main] raw params: ${JSON.stringify(paramObj)}`);
         if (!actions[action]) {
             core.setFailed(`Action ${action} not found`);
             return;
@@ -164,6 +176,7 @@ async function main() {
                 return;
             }
         }
+        core.info(`[Main] converted params: ${JSON.stringify(paramObj)}`);
         await actions[action].exec(url, token, paramObj, timezoneOffset);
     } catch (error) {
         core.setFailed(error.message);
