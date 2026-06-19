@@ -111,9 +111,59 @@ async function runScript(url, token, {name}, timezoneOffset) {
     core.info(`[runScript] script "${name}" executed successfully`);
 }
 
+async function runCronjob(url, token, {name}, timezoneOffset) {
+    core.info(`[runCronjob] searching cronjob "${name}"...`);
+    const searchUrl = `${url}/api/v2/cronjobs/search`;
+    const searchRes = await request(searchUrl, token, 'POST', {
+        info: name,
+        page: 1,
+        pageSize: 100
+    }, timezoneOffset);
+    if (searchRes.code !== 200) {
+        core.setFailed(`Get cronjob ${name} failed: ${searchRes.message}`);
+        return;
+    }
+    const items = searchRes.data?.items;
+    core.info(`[runCronjob] found ${items ? items.length : 0} matching cronjobs`);
+    if (!items || !items.length) {
+        core.setFailed(`Cronjob ${name} not found`);
+        return;
+    }
+    let cronjobId = undefined;
+    for (let item of items) {
+        if (item.name !== name) continue;
+        cronjobId = item.id;
+        core.info(`[runCronjob] matched cronjob id: ${cronjobId}`);
+    }
+    if (!cronjobId) {
+        core.setFailed(`Cronjob ${name} not found`);
+        return;
+    }
+    const handleUrl = `${url}/api/v2/cronjobs/handle`;
+    core.info(`[runCronjob] triggering cronjob...`);
+    const handleRes = await request(handleUrl, token, 'POST', {
+        id: cronjobId
+    }, timezoneOffset);
+    if (handleRes.code !== 200) {
+        core.setFailed(`Run cronjob ${name} failed: ${handleRes.message}`);
+        return;
+    }
+    core.info(`[runCronjob] cronjob "${name}" triggered successfully`);
+}
+
 const actions = {
     'runScript': {
         exec: runScript,
+        params: [
+            {
+                name: 'name',
+                type: 'string',
+                required: true
+            }
+        ]
+    },
+    'runCronjob': {
+        exec: runCronjob,
         params: [
             {
                 name: 'name',

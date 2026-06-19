@@ -29,12 +29,20 @@ Search and execute a script on 1Panel.
 |--------|--------|----------|---------------------------|
 | `name` | string | Yes      | Name of the script to run |
 
+#### `runCronjob`
+
+Search and manually trigger a cronjob on 1Panel.
+
+| Param  | Type   | Required | Description                 |
+|--------|--------|----------|-----------------------------|
+| `name` | string | Yes      | Name of the cronjob to run  |
+
 ### Usage Example
 
 ```yaml
 steps:
   - name: Run 1Panel script
-    uses: Gu-ZT/1panel-actions@1.0.5
+    uses: Gu-ZT/1panel-actions@1.1.0
     with:
       url: ${{ secrets.ONEPANEL_URL }}
       token: ${{ secrets.ONEPANEL_TOKEN }}
@@ -78,12 +86,20 @@ MIT — see [LICENSE](LICENSE).
 |--------|--------|----|----------|
 | `name` | string | 是  | 要运行的脚本名称 |
 
+#### `runCronjob`
+
+搜索并手动触发 1Panel 上的计划任务。
+
+| 参数     | 类型     | 必填 | 说明         |
+|--------|--------|----|------------|
+| `name` | string | 是  | 要触发的计划任务名称 |
+
 ### 使用示例
 
 ```yaml
 steps:
   - name: 运行 1Panel 脚本
-    uses: Gu-ZT/1panel-actions@1.0.5
+    uses: Gu-ZT/1panel-actions@1.1.0
     with:
       url: ${{ secrets.ONEPANEL_URL }}
       token: ${{ secrets.ONEPANEL_TOKEN }}

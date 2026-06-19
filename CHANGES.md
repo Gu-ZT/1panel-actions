@@ -97,6 +97,17 @@ All notable changes to this project will be documented in this file.
 
 - 时间戳精度从毫秒降为秒级，以匹配 1Panel 服务端预期
 
+## [1.1.0] - 2026-06-19
+
+### **Added**
+
+- `runCronjob` action: search and manually trigger a cronjob on 1Panel server (identical flow to `runScript`)
+
+### **新增**
+
+- `runCronjob` 操作：搜索并手动触发 1Panel 服务器上的计划任务（流程与 `runScript` 一致）
+
+[1.1.0]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.1.0
 [1.0.5]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.5
 [1.0.4]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.4
 [1.0.3]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.3
