@@ -116,6 +116,8 @@ async function runCronjob(url, token, {name}, timezoneOffset) {
     const searchUrl = `${url}/api/v2/cronjobs/search`;
     const searchRes = await request(searchUrl, token, 'POST', {
         info: name,
+        order: 'null',
+        orderBy: 'createdAt',
         page: 1,
         pageSize: 100
     }, timezoneOffset);

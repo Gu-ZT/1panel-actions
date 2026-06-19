@@ -42,7 +42,7 @@ Search and manually trigger a cronjob on 1Panel.
 ```yaml
 steps:
   - name: Run 1Panel script
-    uses: Gu-ZT/1panel-actions@1.1.0
+    uses: Gu-ZT/1panel-actions@1.1.1
     with:
       url: ${{ secrets.ONEPANEL_URL }}
       token: ${{ secrets.ONEPANEL_TOKEN }}
@@ -99,7 +99,7 @@ MIT — see [LICENSE](LICENSE).
 ```yaml
 steps:
   - name: 运行 1Panel 脚本
-    uses: Gu-ZT/1panel-actions@1.1.0
+    uses: Gu-ZT/1panel-actions@1.1.1
     with:
       url: ${{ secrets.ONEPANEL_URL }}
       token: ${{ secrets.ONEPANEL_TOKEN }}

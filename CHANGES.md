@@ -107,6 +107,17 @@ All notable changes to this project will be documented in this file.
 
 - `runCronjob` 操作：搜索并手动触发 1Panel 服务器上的计划任务（流程与 `runScript` 一致）
 
+## [1.1.1] - 2026-06-19
+
+### **Fixed**
+
+- `runCronjob` search missing `order` and `orderBy` fields — server rejects request without them
+
+### **修复**
+
+- `runCronjob` 搜索缺少 `order` 和 `orderBy` 字段 — 服务端拒绝不完整请求
+
+[1.1.1]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.1.1
 [1.1.0]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.1.0
 [1.0.5]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.5
 [1.0.4]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.4
