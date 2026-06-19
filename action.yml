@@ -13,6 +13,10 @@ inputs:
   action:
     description: 'Action to perform'
     required: true
+  timezone:
+    description: "UTC offset of your 1Panel server (e.g. '+8', '-5'). Default '+0'"
+    required: false
+    default: '+0'
   params:
     description: "param list in format like 'name=value'"
     required: false

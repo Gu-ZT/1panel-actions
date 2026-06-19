@@ -11,12 +11,13 @@ workflows.
 
 ### Inputs
 
-| Name     | Required | Description                                     |
-|----------|----------|-------------------------------------------------|
-| `url`    | Yes      | 1Panel URL, e.g. `https://1panel.example.com`   |
-| `token`  | Yes      | 1Panel API token                                |
-| `action` | Yes      | Action to perform                               |
-| `params` | No       | Parameters in `name=value` format, one per line |
+| Name       | Required | Description                                          |
+|------------|----------|------------------------------------------------------|
+| `url`      | Yes      | 1Panel URL, e.g. `https://1panel.example.com`        |
+| `token`    | Yes      | 1Panel API token                                     |
+| `action`   | Yes      | Action to perform                                    |
+| `timezone` | No       | UTC offset of 1Panel server, e.g. `+8`. Default `+0` |
+| `params`   | No       | Parameters in `name=value` format, one per line      |
 
 ### Supported Actions
 
@@ -33,7 +34,7 @@ Search and execute a script on 1Panel.
 ```yaml
 steps:
   - name: Run 1Panel script
-    uses: Gu-ZT/1panel-actions@1.0.2
+    uses: Gu-ZT/1panel-actions@1.0.3
     with:
       url: ${{ secrets.ONEPANEL_URL }}
       token: ${{ secrets.ONEPANEL_TOKEN }}
@@ -59,12 +60,13 @@ MIT — see [LICENSE](LICENSE).
 
 ### 输入参数
 
-| 参数       | 必填 | 说明                                        |
-|----------|----|-------------------------------------------|
-| `url`    | 是  | 1Panel 地址，例如 `https://1panel.example.com` |
-| `token`  | 是  | 1Panel API 令牌                             |
-| `action` | 是  | 要执行的操作                                    |
-| `params` | 否  | 参数列表，格式为 `name=value`，每行一个                |
+| 参数         | 必填 | 说明                                        |
+|------------|----|-------------------------------------------|
+| `url`      | 是  | 1Panel 地址，例如 `https://1panel.example.com` |
+| `token`    | 是  | 1Panel API 令牌                             |
+| `action`   | 是  | 要执行的操作                                    |
+| `timezone` | 否  | 1Panel 服务器的 UTC 偏移量，例如 `+8`。默认 `+0`       |
+| `params`   | 否  | 参数列表，格式为 `name=value`，每行一个                |
 
 ### 支持的操作
 
@@ -81,7 +83,7 @@ MIT — see [LICENSE](LICENSE).
 ```yaml
 steps:
   - name: 运行 1Panel 脚本
-    uses: Gu-ZT/1panel-actions@1.0.2
+    uses: Gu-ZT/1panel-actions@1.0.3
     with:
       url: ${{ secrets.ONEPANEL_URL }}
       token: ${{ secrets.ONEPANEL_TOKEN }}

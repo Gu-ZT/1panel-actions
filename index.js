@@ -19,8 +19,8 @@ function convertValue(value, type) {
     }
 }
 
-function getHeaders(token) {
-    const timestamp = Date.now();
+function getHeaders(token, timezoneOffset) {
+    const timestamp = Date.now() + timezoneOffset * 3600000;
     const calcToken = crypto.createHash('md5').update('1panel' + token + timestamp).digest('hex');
     return {
         'Content-Type': 'application/json',
@@ -29,8 +29,8 @@ function getHeaders(token) {
     };
 }
 
-async function request(url, token, method, body) {
-    const customHeaders = getHeaders(token);
+async function request(url, token, method, body, timezoneOffset) {
+    const customHeaders = getHeaders(token, timezoneOffset);
     const fetchUrl = new URL(url);
     let fetchBody = undefined;
     if (method === 'GET' || method === 'DELETE') {
@@ -62,14 +62,14 @@ async function request(url, token, method, body) {
     return await fetchRes.json();
 }
 
-async function runScript(url, token, {name}) {
+async function runScript(url, token, {name}, timezoneOffset) {
     const scriptSearchUrl = `${url}/api/v2/core/script/search`;
     const scriptsRes = await request(scriptSearchUrl, token, 'POST', {
         groupID: 0,
         info: name,
         page: 1,
         pageSize: 100
-    });
+    }, timezoneOffset);
     if (scriptsRes.code !== 200) {
         core.setFailed(`Get script ${name} failed: ${scriptsRes.message}`);
         return;
@@ -94,7 +94,7 @@ async function runScript(url, token, {name}) {
         rows: 24,
         script_id: scriptId,
         operateNode: 'local'
-    });
+    }, timezoneOffset);
     if (runRes.code !== 200) {
         core.setFailed(`Run script ${name} failed: ${runRes.message}`);
         return;
@@ -120,6 +120,12 @@ async function main() {
         const action = core.getInput('action');
         const url = core.getInput('url');
         const token = core.getInput('token');
+        const timezoneRaw = core.getInput('timezone') || '+0';
+        const timezoneOffset = Number(timezoneRaw);
+        if (isNaN(timezoneOffset)) {
+            core.setFailed(`Invalid timezone "${timezoneRaw}"`);
+            return;
+        }
         if (!url) {
             core.setFailed('Input "url" is required');
             return;
@@ -158,7 +164,7 @@ async function main() {
                 return;
             }
         }
-        await actions[action].exec(url, token, paramObj);
+        await actions[action].exec(url, token, paramObj, timezoneOffset);
     } catch (error) {
         core.setFailed(error.message);
     }

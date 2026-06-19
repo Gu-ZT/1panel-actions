@@ -59,6 +59,17 @@ All notable changes to this project will be documented in this file.
 
 - Node 24 ESM 兼容：将顶层逻辑包裹在 `main()` 函数中 — 严格 ESM 模块顶层不允许 `return`
 
+## [1.0.3] - 2026-06-19
+
+### **Added**
+
+- `timezone` input: set UTC offset for your 1Panel server (default `+0`) — fixes timestamp mismatch when server is in a different timezone
+
+### **新增**
+
+- `timezone` 输入：设置 1Panel 服务器的 UTC 偏移量（默认 `+0`）— 修复服务器在不同时区时的时间戳不匹配问题
+
+[1.0.3]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.3
 [1.0.2]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.2
 [1.0.1]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.1
 [1.0.0]: https://github.com/Gu-ZT/1panel-actions/releases/tag/1.0.0
